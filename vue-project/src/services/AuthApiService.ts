@@ -3,10 +3,8 @@ import type { ILoginRequest, IAuthResponse, IRefreshRequest } from "@/domain/IAu
 export class AuthApiService {
     private static baseUrl: string = import.meta.env.VITE_API_BASE_URL;
 
-    // (reminder for me) Why static methods: There's no per-instance state to hold
-
     static async login(req: ILoginRequest): Promise<IAuthResponse> {
-        const url = `${this.baseUrl}Account/Login`
+        const url = `${this.baseUrl}identity/Account/Login`
 
         const response = await fetch(url, {
             method: 'POST',
@@ -25,7 +23,7 @@ export class AuthApiService {
     }
 
     static async refresh(req: IRefreshRequest): Promise<IAuthResponse> {
-        const url = `${this.baseUrl}Account/RefreshToken`
+        const url = `${this.baseUrl}identity/Account/RefreshToken`
 
         const response = await fetch(url, {
             method: 'POST',

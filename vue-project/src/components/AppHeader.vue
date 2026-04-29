@@ -31,8 +31,11 @@
                         </li>
                     </ul>
                     <ul class="navbar-nav">
-                        <li class="nav-item">
+                        <li class="nav-item" v-if="authStore.isLoggedIn()">
                             <a class="nav-link" @click="logOut">Logout</a>
+                        </li>
+                        <li class="nav-item" v-else>
+                            <RouterLink class="nav-link" to="/login">Login</RouterLink>
                         </li>
                     </ul>
                 </div>
