@@ -6,6 +6,7 @@ import type { IEvent } from '@/domain/IEvent';
 import type { IParticipant } from '@/domain/IParticipant';
 import { useAuthStore } from '@/stores/authStore';
 import EventEditModal from '@/components/EventEditModal.vue';
+import EventCreateModal from '@/components/EventCreateModal.vue';
 import EventDetailsSidebar from '@/components/EventDetailsSidebar.vue';
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
 
@@ -28,6 +29,7 @@ const authStore = useAuthStore();
 const participantApiService = new ParticipantApiService();
 
 const editModalRef = ref<InstanceType<typeof EventEditModal> | null>(null);
+const createModalRef = ref<InstanceType<typeof EventCreateModal> | null>(null);
 const detailsSidebarRef = ref<InstanceType<typeof EventDetailsSidebar> | null>(null);
 const confirmDialogRef = ref<InstanceType<typeof ConfirmDialog> | null>(null);
 
@@ -86,6 +88,14 @@ async function submitRegistration(event: IEvent) {
   }
 }
 
+function openCreate() {
+  createModalRef.value?.show();
+}
+
+function onCreated(created: IEvent) {
+  events.value.unshift(created);
+}
+
 function openEdit(event: IEvent) {
   selectedEvent.value = event;
   editModalRef.value?.show();
@@ -136,6 +146,12 @@ onMounted(async () => {
 <template>
   <div class="text-center">
     <h1>See what events are happening</h1>
+
+    <div v-if="authStore.isAdmin()" class="create-row">
+      <button type="button" class="btn btn-primary" @click="openCreate">
+        Create new event
+      </button>
+    </div>
 
     <p v-if="loading">Loading events...</p>
     <p v-else-if="error" class="error">{{ error }}</p>
@@ -202,6 +218,7 @@ onMounted(async () => {
     </div>
 
     <EventEditModal ref="editModalRef" :event="selectedEvent" @updated="onUpdated" />
+    <EventCreateModal ref="createModalRef" @created="onCreated" />
     <EventDetailsSidebar ref="detailsSidebarRef" :event="selectedEvent" />
     <ConfirmDialog
       ref="confirmDialogRef"
@@ -215,6 +232,12 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.create-row {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
 .event-list {
   display: flex;
   flex-direction: column;
