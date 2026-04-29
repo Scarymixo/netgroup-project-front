@@ -5,7 +5,7 @@ import type { IAuthResponse } from '@/domain/IAuth'
 export const useAuthStore = defineStore('auth', () => {
     const STORAGE_KEY = "auth"
     
-    let initial: { jwt: string; refreshToken: string; firstName: string; lastName: string } | null = null
+    let initial: { jwt: string; refreshToken: string } | null = null
     try {
         const raw = sessionStorage.getItem(STORAGE_KEY)
         if (raw) initial = JSON.parse(raw)
@@ -15,8 +15,6 @@ export const useAuthStore = defineStore('auth', () => {
 
     const jwt = ref<string>(initial?.jwt ?? "")
     const refreshToken = ref<string>(initial?.refreshToken ?? "")
-    const firstName = ref<string>(initial?.firstName ?? "")
-    const lastName = ref<string>(initial?.lastName ?? "")
 
     // Helper
     function persist() {
@@ -27,24 +25,18 @@ export const useAuthStore = defineStore('auth', () => {
         sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
             jwt: jwt.value,
             refreshToken: refreshToken.value,
-            firstName: firstName.value,
-            lastName: lastName.value,
         }))
     }
 
     const setAuth = (data: IAuthResponse) => {
-        jwt.value = data.token;
+        jwt.value = data.jwt;
         refreshToken.value = data.refreshToken;
-        firstName.value = data.firstName;
-        lastName.value = data.lastName;
         persist();
     }
 
     const logOut = () => {
         jwt.value = "";
         refreshToken.value = "";
-        firstName.value = "";
-        lastName.value = "";
         sessionStorage.removeItem(STORAGE_KEY);
     }
   
@@ -52,5 +44,10 @@ export const useAuthStore = defineStore('auth', () => {
         return jwt.value !== "";
     }
 
-    return { jwt, refreshToken, firstName, lastName, setAuth, logOut, isLoggedIn }
+    // Only admins can authenticate today; revisit when regular-user login is added.
+    const isAdmin = () => {
+        return isLoggedIn();
+    }
+
+    return { jwt, refreshToken, setAuth, logOut, isLoggedIn, isAdmin }
 })

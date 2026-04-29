@@ -4,10 +4,8 @@ export interface ILoginRequest {
 }
 
 export interface IAuthResponse {
-    token: string,
+    jwt: string,
     refreshToken: string,
-    firstName: string,
-    lastName: string,
 }
 
 export interface IRefreshRequest {

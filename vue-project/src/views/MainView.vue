@@ -4,6 +4,10 @@ import { EventApiService } from '@/services/EventApiService';
 import { ParticipantApiService } from '@/services/ParticipantApiService';
 import type { IEvent } from '@/domain/IEvent';
 import type { IParticipant } from '@/domain/IParticipant';
+import { useAuthStore } from '@/stores/authStore';
+import EventEditModal from '@/components/EventEditModal.vue';
+import EventDetailsSidebar from '@/components/EventDetailsSidebar.vue';
+import ConfirmDialog from '@/components/ConfirmDialog.vue';
 
 interface RegistrationForm {
   firstName: string;
@@ -20,7 +24,15 @@ const error = ref<string | null>(null);
 const openFormEventId = ref<string | null>(null);
 const forms = reactive<Record<string, RegistrationForm>>({});
 
+const authStore = useAuthStore();
 const participantApiService = new ParticipantApiService();
+
+const editModalRef = ref<InstanceType<typeof EventEditModal> | null>(null);
+const detailsSidebarRef = ref<InstanceType<typeof EventDetailsSidebar> | null>(null);
+const confirmDialogRef = ref<InstanceType<typeof ConfirmDialog> | null>(null);
+
+const selectedEvent = ref<IEvent | null>(null);
+const pendingDeleteId = ref<string | null>(null);
 
 function formatDate(value: Date | string): string {
   const date = value instanceof Date ? value : new Date(value);
@@ -74,6 +86,40 @@ async function submitRegistration(event: IEvent) {
   }
 }
 
+function openEdit(event: IEvent) {
+  selectedEvent.value = event;
+  editModalRef.value?.show();
+}
+
+function openDetails(event: IEvent) {
+  selectedEvent.value = event;
+  detailsSidebarRef.value?.show();
+}
+
+function requestDelete(event: IEvent) {
+  pendingDeleteId.value = event.id;
+  confirmDialogRef.value?.show();
+}
+
+function onUpdated(updated: IEvent) {
+  const idx = events.value.findIndex((e) => e.id === updated.id);
+  if (idx !== -1) events.value[idx] = updated;
+}
+
+async function onConfirmDelete() {
+  const id = pendingDeleteId.value;
+  if (!id) return;
+  try {
+    const service = new EventApiService();
+    await service.delete(id);
+    events.value = events.value.filter((e) => e.id !== id);
+  } catch (e) {
+    error.value = e instanceof Error ? e.message : 'Failed to delete event';
+  } finally {
+    pendingDeleteId.value = null;
+  }
+}
+
 onMounted(async () => {
   const eventApiService = new EventApiService();
 
@@ -105,7 +151,19 @@ onMounted(async () => {
           <p><strong>Spots left:</strong> {{ event.spotsLeft }}</p>
 
           <div class="register-row">
+            <template v-if="authStore.isAdmin()">
+              <button type="button" class="btn btn-outline-primary btn-sm" @click="openEdit(event)">
+                Edit
+              </button>
+              <button type="button" class="btn btn-outline-secondary btn-sm" @click="openDetails(event)">
+                Details
+              </button>
+              <button type="button" class="btn btn-outline-danger btn-sm" @click="requestDelete(event)">
+                Delete
+              </button>
+            </template>
             <button
+              v-else
               type="button"
               class="register-btn"
               @click="toggleForm(event.id)"
@@ -116,7 +174,7 @@ onMounted(async () => {
         </div>
 
         <form
-          v-if="openFormEventId === event.id && forms[event.id]"
+          v-if="!authStore.isAdmin() && openFormEventId === event.id && forms[event.id]"
           class="register-form"
           @submit.prevent="submitRegistration(event)"
         >
@@ -142,6 +200,17 @@ onMounted(async () => {
         </form>
       </div>
     </div>
+
+    <EventEditModal ref="editModalRef" :event="selectedEvent" @updated="onUpdated" />
+    <EventDetailsSidebar ref="detailsSidebarRef" :event="selectedEvent" />
+    <ConfirmDialog
+      ref="confirmDialogRef"
+      title="Delete event?"
+      message="This will permanently delete the event. This action cannot be undone."
+      confirm-label="Delete"
+      confirm-variant="danger"
+      @confirm="onConfirmDelete"
+    />
   </div>
 </template>
 
@@ -171,6 +240,7 @@ onMounted(async () => {
 .register-row {
   display: flex;
   justify-content: flex-end;
+  gap: 0.5rem;
   margin-top: 0.5rem;
 }
 
