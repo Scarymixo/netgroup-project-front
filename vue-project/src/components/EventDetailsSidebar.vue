@@ -24,13 +24,12 @@ function formatDate(value: Date | string): string {
   return date.toLocaleString();
 }
 
-async function loadParticipants() {
-  if (!props.event) return;
+async function loadParticipants(eventId: string) {
   error.value = null;
   loading.value = true;
   try {
     const service = new EventApiService();
-    participants.value = await service.getParticipants(props.event.id);
+    participants.value = await service.getParticipants(eventId);
   } catch (e) {
     error.value = e instanceof Error ? e.message : 'Failed to load participants';
     participants.value = [];
@@ -54,9 +53,9 @@ onBeforeUnmount(() => {
   offcanvas = null;
 });
 
-async function show() {
+async function show(eventId: string) {
   offcanvas?.show();
-  await loadParticipants();
+  await loadParticipants(eventId);
 }
 
 function hide() {

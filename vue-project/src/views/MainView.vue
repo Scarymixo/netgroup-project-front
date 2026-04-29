@@ -93,7 +93,7 @@ function openEdit(event: IEvent) {
 
 function openDetails(event: IEvent) {
   selectedEvent.value = event;
-  detailsSidebarRef.value?.show();
+  detailsSidebarRef.value?.show(event.id);
 }
 
 function requestDelete(event: IEvent) {
