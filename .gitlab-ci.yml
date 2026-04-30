@@ -8,4 +8,4 @@ deploy:
   tags:
     - shared
   script:
-    - docker compose -p netgrouptask up --build --remove-orphans --detach
+    - docker compose -p netgroup-front up --build --remove-orphans --detach
