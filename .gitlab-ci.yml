@@ -6,6 +6,6 @@ deploy:
   only:
     - main
   tags:
-    - shared
+    - testserver-vps
   script:
     - docker compose -p netgroup-front up --build --remove-orphans --detach
