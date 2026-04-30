@@ -4,7 +4,9 @@ Frontend for the Netgroup events application. Built with Vue 3, TypeScript, Pini
 
 ## Public URL
 
-_TBD_
+misauk-netgroup.proxy.itcollege.ee
+
+Frontend deployment is done using Docker and a private VPS which needs a school account.
 
 ## Tech Stack
 
