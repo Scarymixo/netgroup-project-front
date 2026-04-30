@@ -1,0 +1,7 @@
+services:
+  web:
+    build: .
+    restart: unless-stopped
+    container_name: netgrouptask_front
+    ports:
+      - "88:80"
