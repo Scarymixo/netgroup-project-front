@@ -61,7 +61,7 @@ The dev server starts with hot-reload at the URL printed by Vite (typically http
 
 ## Configuration
 
-API base URL and other environment settings are read from Vite env files (`.env`, `.env.local`, etc.). See [Vite env vars](https://vite.dev/guide/env-and-mode.html) and [Vite Configuration Reference](https://vite.dev/config/).
+API base URL and other environment settings are read from Vite env files (`.env`, `.env.local`, etc.). See [Vite env vars](https://vite.dev/guide/env-and-mode.html) and [Vite Configuration Reference](https://vite.dev/config/). Might need to create a new .env file locally.
 
 ## Recommended IDE Setup
 
