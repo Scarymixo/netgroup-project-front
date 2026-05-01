@@ -1,7 +1,7 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 COPY vue-project/package*.json ./
-RUN npm ci
+RUN npm install
 COPY vue-project/ ./
 RUN npm run build
 
