@@ -44,6 +44,7 @@ src/
 ```sh
 cd vue-project
 npm install
+npm install axios
 npm run dev
 ```
 
