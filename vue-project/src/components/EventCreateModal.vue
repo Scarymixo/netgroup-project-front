@@ -3,6 +3,7 @@ import { onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import { Modal } from 'bootstrap';
 import type { IEvent } from '@/domain/IEvent';
 import { EventApiService } from '@/services/EventApiService';
+import { extractApiError } from '@/utils/errorUtils';
 
 const emit = defineEmits<{
   (e: 'created', event: IEvent): void;
@@ -73,7 +74,7 @@ async function save() {
     emit('created', created ?? payload);
     hide();
   } catch (e) {
-    error.value = e instanceof Error ? e.message : 'Failed to create event';
+    error.value = extractApiError(e, 'Failed to create event');
   } finally {
     submitting.value = false;
   }

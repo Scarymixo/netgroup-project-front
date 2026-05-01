@@ -3,6 +3,7 @@ import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 import { Modal } from 'bootstrap';
 import type { IEvent } from '@/domain/IEvent';
 import { EventApiService } from '@/services/EventApiService';
+import { extractApiError } from '@/utils/errorUtils';
 
 interface Props {
   event: IEvent | null;
@@ -91,7 +92,7 @@ async function save() {
     emit('updated', payload);
     hide();
   } catch (e) {
-    error.value = e instanceof Error ? e.message : 'Failed to update event';
+    error.value = extractApiError(e, 'Failed to update event');
   } finally {
     submitting.value = false;
   }

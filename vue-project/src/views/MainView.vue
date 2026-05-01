@@ -5,6 +5,7 @@ import { ParticipantApiService } from '@/services/ParticipantApiService';
 import type { IEvent } from '@/domain/IEvent';
 import type { IParticipant } from '@/domain/IParticipant';
 import { useAuthStore } from '@/stores/authStore';
+import { extractApiError } from '@/utils/errorUtils';
 import EventEditModal from '@/components/EventEditModal.vue';
 import EventCreateModal from '@/components/EventCreateModal.vue';
 import EventDetailsSidebar from '@/components/EventDetailsSidebar.vue';
@@ -82,7 +83,7 @@ async function submitRegistration(event: IEvent) {
     form.nationalId = '';
     if (event.spotsLeft > 0) event.spotsLeft -= 1;
   } catch (e) {
-    form.error = e instanceof Error ? e.message : 'Failed to register';
+    form.error = extractApiError(e, 'Failed to register');
   } finally {
     form.submitting = false;
   }
@@ -124,7 +125,7 @@ async function onConfirmDelete() {
     await service.delete(id);
     events.value = events.value.filter((e) => e.id !== id);
   } catch (e) {
-    error.value = e instanceof Error ? e.message : 'Failed to delete event';
+    error.value = extractApiError(e, 'Failed to delete event');
   } finally {
     pendingDeleteId.value = null;
   }
@@ -136,7 +137,7 @@ onMounted(async () => {
   try {
     events.value = await eventApiService.getAll();
   } catch (e) {
-    error.value = e instanceof Error ? e.message : 'Failed to load events';
+    error.value = extractApiError(e, 'Failed to load events');
   } finally {
     loading.value = false;
   }
