@@ -39,5 +39,5 @@ __screenshots__/
 *.timestamp-*-*.mjs
 
 .env
-vue-project/package-lock.json
+package-lock.json
 
