@@ -1,12 +1,13 @@
 # vue-project
 
-Frontend for the Netgroup events application. Built with Vue 3, TypeScript, Pinia, Vue Router, Bootstrap, and Vite.
+Frontend for event registration system. Admins create events; users (no login required) browse them and register with their personal details. Built with Vue 3, TypeScript, Pinia, Vue Router, Bootstrap, and Vite.
 
 ## Public URL
 
-misauk-netgroup.proxy.itcollege.ee
-
-Frontend deployment is done using Docker and a private VPS which needs a school account.
+- Backend public URL: misauk-netgroup-back.proxy.itcollege.ee (MVC, used for quick testing)
+- Backend repository URL: github.com/Scarymixo/netgroup-project
+- Frontend public URL: misauk-netgroup.proxy.itcollege.ee (Vue, separate repo)
+- Frontend repository URL: https://github.com/Scarymixo/netgroup-project-front
 
 ## Tech Stack
 
