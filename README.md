@@ -97,3 +97,7 @@ npm run preview
 ```
 
 The build output is emitted to `dist/`.
+
+## Git setup
+
+For deployment a private repo is being used, github is a public mirror of this repo. This choice was made to demonstrate the knowledge of deployment.
