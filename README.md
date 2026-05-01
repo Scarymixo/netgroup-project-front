@@ -50,6 +50,8 @@ npm run dev
 
 The dev server starts with hot-reload at the URL printed by Vite (typically http://localhost:5173).
 
+To run locally, backend must be running in another project.
+
 ## Scripts
 
 | Script              | Description                                            |
